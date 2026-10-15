@@ -377,13 +377,13 @@ data/              SQLite file (created at run time, ignored by Git)
 
 ## 📁 Documentation & Project Management
 
-| Document Category      | Document Title                    | Location / File                                                       |
-| :--------------------- | :-------------------------------- | :-------------------------------------------------------------------- |
-| **Project Management** | Project Proposal                  | [`milestone-1/`](milestone-1/project-proposal.pdf)                    |
-| **Project Management** | Project Plan & Milestones         | [`milestone-1/`](milestone-1/project-plan.pdf)                        |
-| **Project Management** | Task Assignment & Roles (RACI)    | [`milestone-1/`](milestone-1/task-assignment-and-roles.pdf)           |
-| **Project Management** | Risk Assessment & Mitigation Plan | [`milestone-1/`](milestone-1/risk-assessment-and-mitigation-plan.pdf) |
-| **Project Management** | KPIs & Success Metrics            | [`milestone-1/`](milestone-1/KPIs.pdf)                                |
+| Document Category      | Document Title                    | Location / File                                                                                          |
+| :--------------------- | :-------------------------------- | :------------------------------------------------------------------------------------------------------- |
+| **Project Management** | Project Proposal                  | [`milestone-1/project-proposal`](milestone-1/project-proposal.pdf)                                       |
+| **Project Management** | Project Plan & Milestones         | [`milestone-1/project-plan`](milestone-1/project-plan.pdf)                                               |
+| **Project Management** | Task Assignment & Roles (RACI)    | [`milestone-1/task-assignment-and-roles`](milestone-1/task-assignment-and-roles.pdf)                     |
+| **Project Management** | Risk Assessment & Mitigation Plan | [`milestone-1/risk-assessment-and-mitigation-plan`](milestone-1/risk-assessment-and-mitigation-plan.pdf) |
+| **Project Management** | KPIs & Success Metrics            | [`milestone-1/KPIs`](milestone-1/KPIs.pdf)                                                               |
 
 <!-- Screenshots can be added later, for example:
 ![Dashboard](docs/images/dashboard.png)
