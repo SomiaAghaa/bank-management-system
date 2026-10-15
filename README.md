@@ -379,11 +379,11 @@ data/              SQLite file (created at run time, ignored by Git)
 
 | Document Category      | Document Title                    | Location / File                                                       |
 | :--------------------- | :-------------------------------- | :-------------------------------------------------------------------- |
-| **Project Management** | Project Proposal                  | [`milestone-1/`](milestone-1/Project_Proposal.pdf)                    |
-| **Project Management** | Project Plan & Milestones         | [`milestone-1/`](milestone-1/Project_Plan.pdf)                        |
-| **Project Management** | Task Assignment & Roles (RACI)    | [`milestone-1/`](milestone-1/Task_Assignment_and_Roles.pdf)           |
-| **Project Management** | Risk Assessment & Mitigation Plan | [`milestone-1/`](milestone-1/Risk_Assessment_and_Mitigation_Plan.pdf) |
-| **Project Management** | KPIs & Success Metrics            | [`milestone-1/`](milestone-1/KPIs_and_Metrics.pdf)                    |
+| **Project Management** | Project Proposal                  | [`milestone-1/`](milestone-1/project-proposal.pdf)                    |
+| **Project Management** | Project Plan & Milestones         | [`milestone-1/`](milestone-1/project-plan.pdf)                        |
+| **Project Management** | Task Assignment & Roles (RACI)    | [`milestone-1/`](milestone-1/task-assignment-and-roles.pdf)           |
+| **Project Management** | Risk Assessment & Mitigation Plan | [`milestone-1/`](milestone-1/risk-assessment-and-mitigation-plan.pdf) |
+| **Project Management** | KPIs & Success Metrics            | [`milestone-1/`](milestone-1/KPIs.pdf)                                |
 
 <!-- Screenshots can be added later, for example:
 ![Dashboard](docs/images/dashboard.png)
