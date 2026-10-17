@@ -68,6 +68,8 @@ The project is built in Java and **designed for testing from the first line**: e
 | Scheduled jobs (monthly interest, Fixed Deposit maturity)           | ⏳ Planned |
 | Selenium UI suite, Postman collection, manual test plan             | ⏳ Planned |
 
+<!-- The complete list of requirements, with priorities, is in the [specification](docs/specification/Banking_System_Requirements_v2_6.docx). -->
+
 ---
 
 ## 🚀 Quick start
@@ -259,7 +261,7 @@ erDiagram
 
 </details>
 
-The limits and the fee follow InstaPay Egypt (checked in October 2026). The rates follow published Egyptian bank figures (September and October 2026). They can change, so every number is a configuration value. Each rule has an ID (`BR-07`, `TXN-03`, ...) in the specification.
+<!-- The limits and the fee follow InstaPay Egypt (checked in October 2026). The rates follow published Egyptian bank figures (September and October 2026). They can change, so every number is a configuration value. Each rule has an ID (`BR-07`, `TXN-03`, ...) in the specification. -->
 
 ---
 
@@ -278,6 +280,8 @@ Base path `/api/v1` · Authentication: **HTTP Basic** (email and password) · Re
 | `POST` | `/accounts/{number}/close`       | Owner    | Close an account (balance must be 0.00) |
 | `POST` | `/accounts/{number}/deposits`    | Owner    | Deposit                                 |
 | `POST` | `/accounts/{number}/withdrawals` | Owner    | Withdraw                                |
+
+<!-- **Planned:** transfers and fee quote, statements and CSV export, profile, and the `/admin/**` endpoints. See the specification, Section 7.5. -->
 
 Every error has the same shape, so tools and tests can rely on the `error` code:
 
@@ -323,7 +327,7 @@ mvn test
 ```
 
 - Tests never touch `data/bank.db`; each test context uses its own database file under `target/`.
-- Every test case names the requirement it checks (for example `TC-S-01` checks `SEC-02`). The specification, Section 8, lists ready-made boundary cases.
+    <!-- - Every test case names the requirement it checks (for example `TC-S-01` checks `SEC-02`). The specification, Section 8, lists ready-made boundary cases. -->
 - Test design techniques: equivalence partitioning, boundary value analysis, decision tables, state transition and use-case testing.
 
 ---
@@ -337,9 +341,13 @@ mvn test
 - **Secrets:** nothing sensitive in Git. `.env` and database files are ignored; credentials come from environment variables.
 - **Swagger** is disabled outside the dev profile.
 
+<!-- The full list (SEC-01 to SEC-11) is in the specification, Section 6. -->
+
 ---
 
 ## ⚙️ Configuration
+
+All business numbers live in [`application.yml`](src/main/resources/application.yml). Changing a limit or a rate never needs a code change.
 
 | Setting                                                       | Purpose                                                                                                        |
 | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
@@ -401,6 +409,8 @@ data/              SQLite file (created at run time, ignored by Git)
 |  4  | **Aladdin Ahmed**    | Backend Developer    |                          [![@AlaadinAhmed](https://img.shields.io/badge/@AlaadinAhmed-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AlaadinAhmed)                          |
 |  5  | **Aghapy Antonious** | Backend Developer    | [![@aghapyantoniouswaheeb--dotcom](https://img.shields.io/badge/@aghapyantoniouswaheeb--dotcom-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/aghapyantoniouswaheeb-dotcom) |
 
+<!-- Every deliverable has a primary owner and a secondary reviewer. The full matrix and the work breakdown are in the [specification](docs/specification/Banking_System_Requirements_v2_6.docx), Section 9.2. -->
+
 ---
 
 ## 🤝 Contributing and Git workflow
@@ -415,7 +425,7 @@ main   ← stable, protected
 ```
 
 - **No direct push** to `main` or `dev`. Work on a branch created from `dev` and open a pull request into `dev`.
-- **Review:** at least one teammate reviews every pull request. Changes that touch money or security get extra care.
+- **Review:** every pull request has a reviewer named in the peer-review matrix. Changes that touch money or security also go through the Tech Lead.
 - **Commit messages:** `feat:`, `fix:`, `test:`, `docs:`, `refactor:` or `chore:`, then a short description.
 - **Definition of Done:** reviewed pull request, tests pass, acceptance criteria met, test cases written and executed, no open Critical or High defect, documentation updated.
 
