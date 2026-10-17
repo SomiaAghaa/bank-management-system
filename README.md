@@ -261,7 +261,7 @@ erDiagram
 
 </details>
 
-<!-- The limits and the fee follow InstaPay Egypt (checked in October 2026). The rates follow published Egyptian bank figures (September and October 2026). They can change, so every number is a configuration value. Each rule has an ID (`BR-07`, `TXN-03`, ...) in the specification. -->
+The limits and the fee follow InstaPay Egypt (checked in October 2026). The interest rates are demo values chosen to match published 2026 Egyptian bank products, and they can change, so every number is a configuration value.
 
 ---
 
@@ -281,7 +281,7 @@ Base path `/api/v1` · Authentication: **HTTP Basic** (email and password) · Re
 | `POST` | `/accounts/{number}/deposits`    | Owner    | Deposit                                 |
 | `POST` | `/accounts/{number}/withdrawals` | Owner    | Withdraw                                |
 
-<!-- **Planned:** transfers and fee quote, statements and CSV export, profile, and the `/admin/**` endpoints. See the specification, Section 7.5. -->
+**Planned:** transfers and fee quote, statements and CSV export, profile, and the `/admin/**` endpoints. See the specification, Section 7.5.
 
 Every error has the same shape, so tools and tests can rely on the `error` code:
 
@@ -327,7 +327,7 @@ mvn test
 ```
 
 - Tests never touch `data/bank.db`; each test context uses its own database file under `target/`.
-    <!-- - Every test case names the requirement it checks (for example `TC-S-01` checks `SEC-02`). The specification, Section 8, lists ready-made boundary cases. -->
+      <!-- - Every test case names the requirement it checks (for example `TC-S-01` checks `SEC-02`). The specification, Section 8, lists ready-made boundary cases. -->
 - Test design techniques: equivalence partitioning, boundary value analysis, decision tables, state transition and use-case testing.
 
 ---
@@ -383,7 +383,7 @@ data/              SQLite file (created at run time, ignored by Git)
 
 ---
 
-## 📁 Documentation & Project Management
+## 📚 Documentation
 
 | Document Category      | Document Title                    | Location / File                                                                                          |
 | :--------------------- | :-------------------------------- | :------------------------------------------------------------------------------------------------------- |
@@ -399,15 +399,15 @@ data/              SQLite file (created at run time, ignored by Git)
 
 ---
 
-## 👥 Team Members
+## 👥 Team
 
-|  #  | Name                 | Role                 |                                                                                              GitHub Profile                                                                                              |
-| :-: | :------------------- | :------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|  1  | **Muhammad Sayyid**  | Tech Lead / Security |                        [![@M07ammadSayed](https://img.shields.io/badge/@M07ammadSayed-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/M07ammadSayed)                         |
-|  2  | **Somia Rashad**     | QA Lead              |                             [![@SomaiAghaa](https://img.shields.io/badge/@SomaiAghaa-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/SomaiAghaa)                             |
-|  3  | **Asmaa Mohamed**    | Frontend Developer   |                    [![@Asmaa--Mohamed28](https://img.shields.io/badge/@Asmaa--Mohamed28-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Asmaa-Mohamed28)                     |
-|  4  | **Aladdin Ahmed**    | Backend Developer    |                          [![@AlaadinAhmed](https://img.shields.io/badge/@AlaadinAhmed-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AlaadinAhmed)                          |
-|  5  | **Aghapy Antonious** | Backend Developer    | [![@aghapyantoniouswaheeb--dotcom](https://img.shields.io/badge/@aghapyantoniouswaheeb--dotcom-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/aghapyantoniouswaheeb-dotcom) |
+|  #  | Name                 | Role                               | GitHub                                                                                                                                                                                                   |
+| :-: | -------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|  1  | **Muhammad Sayyid**  | Tech Lead & Software Architect     | [![@M07ammadSayed](https://img.shields.io/badge/@M07ammadSayed-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/M07ammadSayed)                                                |
+|  2  | **Somia Rashad**     | QA Lead & Test Automation Engineer | [![@SomaiAghaa](https://img.shields.io/badge/@SomaiAghaa-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/SomaiAghaa)                                                         |
+|  3  | **Asmaa Mohamed**    | Frontend & UI                      | [![@Asmaa--Mohamed28](https://img.shields.io/badge/@Asmaa--Mohamed28-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Asmaa-Mohamed28)                                        |
+|  4  | **Aladdin Ahmed**    | Core Banking Logic                 | [![@AlaadinAhmed](https://img.shields.io/badge/@AlaadinAhmed-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AlaadinAhmed)                                                   |
+|  5  | **Aghapy Antonious** | Backend Services & Admin           | [![@aghapyantoniouswaheeb--dotcom](https://img.shields.io/badge/@aghapyantoniouswaheeb--dotcom-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/aghapyantoniouswaheeb-dotcom) |
 
 <!-- Every deliverable has a primary owner and a secondary reviewer. The full matrix and the work breakdown are in the [specification](docs/specification/Banking_System_Requirements_v2_6.docx), Section 9.2. -->
 
@@ -440,15 +440,16 @@ main   ← stable, protected
 
 ## 🗺️ Roadmap
 
-| Week | Goal                                                                                                 |
-| :--: | ---------------------------------------------------------------------------------------------------- |
-|  1   | Specification agreed, repository and Jira ready, application skeleton in place                       |
-| 2–3  | Account rules, accounts, deposit, withdraw, transfer, error handling                                 |
-|  4   | Statements, admin features, audit log, jobs. All Must features complete. Pages frozen for automation |
-|  5   | Selenium and Postman suites, security tests                                                          |
-|  6   | Regression, defect fixing, coverage, dependency check                                                |
-|  7   | Documentation, Jira reports, demo rehearsal                                                          |
-|  8   | Buffer and final presentation                                                                        |
+| Week | Goal                                                                          |
+| :--: | ----------------------------------------------------------------------------- |
+|  1   | Specification signed off, repository and Jira ready, project skeleton running |
+|  2   | Master Test Plan and RTM; architecture and database setup                     |
+|  3   | Security and authentication module                                            |
+|  4   | Core account domain and logic; front-end pages with permanent element IDs     |
+|  5   | Postman API test suite; money operations and scheduled jobs complete          |
+|  6   | Selenium UI suite; services, admin and CSV export                             |
+|  7   | Regression, defect fixing, documentation and demo preparation                 |
+|  8   | Final dry run and final presentation                                          |
 
 ---
 
