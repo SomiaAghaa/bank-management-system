@@ -30,51 +30,50 @@ Every rule is written down, numbered and testable.
 
 ## 📖 Overview
 
-The **Banking Transaction System** is the final project of the **DEPI Software Testing** track. It is a real, working web application: customers register, open **Savings**, **Checking** and **Fixed Deposit** accounts, deposit, withdraw and (soon) transfer money, while administrators monitor the bank.
+The **Banking Transaction System** is the final project of the **DEPI Software Testing** track. It is a real, working web application: customers register, open **Savings**, **Checking** and **Fixed Deposit** accounts, deposit, withdraw and transfer money, while administrators monitor the bank, manage account statuses, and inspect audit logs.
 
-The project is built in Java and **designed for testing from the first line**: every requirement has an ID, every error has a stable code, every page element has a fixed `id`, the demo data is identical on every machine, and time can be controlled in tests.
+The project is built in Java and **designed for testing from the first line**: every requirement has an ID, every error has a stable code, every page element has a fixed `id`, the demo data is identical on every machine, and time can be controlled in tests via an injected `Clock`.
 
 ### ✨ Highlights
 
 |                            |                                                                                                      |
 | -------------------------- | ---------------------------------------------------------------------------------------------------- |
-| 💰 **Exact money**         | `BigDecimal` in Java, whole piasters in the database. No rounding surprises.                         |
-| 🔒 **Secure by design**    | BCrypt passwords, role and ownership checks on the server, CSRF protection, escaped output.          |
+| 💰 **Exact money**         | `BigDecimal` in Java, whole piasters (`BIGINT`) in SQLite. No floating-point rounding surprises.     |
+| 🔒 **Secure by design**    | BCrypt passwords, role and ownership checks on the server (HTTP 404 on IDOR), CSRF protection.       |
 | 📒 **Immutable ledger**    | Every successful operation writes an append-only row. Balances can always be explained.              |
-| ⚛️ **All or nothing**      | Each operation runs in one database transaction. It fully succeeds or changes nothing.               |
+| ⚛️ **All or nothing**      | Each operation runs in one atomic database transaction. It fully succeeds or changes nothing.        |
 | 🇪🇬 **Real figures**        | Transfer limits and fees follow InstaPay Egypt; interest rates follow published Egyptian bank rates. |
-| 🧪 **Testable everywhere** | Stable element ids, stable error codes, fixed demo data, an injectable clock, Swagger documentation. |
+| 🧪 **Testable everywhere** | Stable element IDs, stable error codes, fixed demo data, an injectable clock, Swagger documentation. |
 
 ---
 
 ## 🚦 Project status
 
-> The foundation is built. Several modules are still being developed by the team.
+> Project governance and requirement specifications are complete. Core banking modules are actively being developed and tested according to the 8-week plan.
 
-| Area                                                                |   Status   |
-| ------------------------------------------------------------------- | :--------: |
-| Registration, login and roles (web and API)                         | ⏳ Planned |
-| Open Savings, Checking and Fixed Deposit accounts                   | ⏳ Planned |
-| Customer dashboard                                                  | ⏳ Planned |
-| Deposit and withdraw with per-transaction, daily and monthly limits | ⏳ Planned |
-| Immutable ledger and 12-digit account numbers with check digit      | ⏳ Planned |
-| Access control (no access to another customer's account)            | ⏳ Planned |
-| Close an account (API)                                              | ⏳ Planned |
-| Login lockout and session timeout                                   | ⏳ Planned |
-| **Transfer, transfer fee, fee quote, idempotency key**              | ⏳ Planned |
-| Customer profile page                                               | ⏳ Planned |
-| Statements, filters and CSV export                                  | ⏳ Planned |
-| Admin dashboard, search, freeze / unfreeze, audit log               | ⏳ Planned |
-| Scheduled jobs (monthly interest, Fixed Deposit maturity)           | ⏳ Planned |
-| Selenium UI suite, Postman collection, manual test plan             | ⏳ Planned |
-
-<!-- The complete list of requirements, with priorities, is in the [specification](docs/specification/Banking_System_Requirements_v2_6.docx). -->
+| Area                                                                |      Status       |
+| ------------------------------------------------------------------- | :---------------: |
+| Milestone 1: Project Proposal, Plan, Roles, KPIs & Risk Assessment  |   ✅ Completed    |
+| Milestone 2: Requirement Gathering & System Specification           |   ✅ Completed    |
+| Registration, login and roles (web and API)                         |   ⏳ Planned      |
+| Open Savings, Checking and Fixed Deposit accounts                   |   ⏳ Planned      |
+| Customer dashboard & profile management                             |   ⏳ Planned      |
+| Deposit and withdraw with per-transaction, daily and monthly limits |   ⏳ Planned      |
+| Immutable ledger and 12-digit account numbers with Luhn check digit |   ⏳ Planned      |
+| Access control (HTTP 404 on cross-customer account access)          |   ⏳ Planned      |
+| Close an account (ACTIVE with 0.00 balance)                         |   ⏳ Planned      |
+| Login lockout (5 attempts / 15 min) and session idle timeout        |   ⏳ Planned      |
+| **Transfer, transfer fee triplet, fee quote, idempotency key**      |   ⏳ Planned      |
+| Statements, date/type filters and UTF-8 CSV export                  |   ⏳ Planned      |
+| Admin dashboard, customer/account search, freeze/unfreeze, audit    |   ⏳ Planned      |
+| Scheduled jobs (monthly savings interest, Fixed Deposit maturity)   |   ⏳ Planned      |
+| Selenium UI suite, Postman collection, Master Test Plan & RTM       |   ⏳ Planned      |
 
 ---
 
 ## 🚀 Quick start
 
-**You need:** JDK 17 or newer and Maven 3.9 or newer (IntelliJ IDEA includes Maven).
+**You need:** JDK 17 or newer and Maven 3.9 or newer (or use the included Maven Wrapper `./mvnw`).
 
 **1. Clone**
 
@@ -89,7 +88,7 @@ cd banking-transaction-system
 mvn test
 ```
 
-This runs the unit, integration and API security tests.
+*(Or `./mvnw test` if using the Maven Wrapper).* This runs the unit, integration and API security tests.
 
 **3. Start the application with demo data**
 
@@ -121,12 +120,12 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 | `Unknown lifecycle phase ".run.profiles=dev"` | You are in PowerShell. Put the option in quotes, as shown above.           |
 | `Port 8080 was already in use`                | Stop the other program, or start with `--server.port=8081`.                |
 | `release version 17 not supported`            | Your JDK is older than 17. Install JDK 17 or newer.                        |
-| `mvn` is not recognised                       | Install Maven, or open the project in IntelliJ IDEA and run it from there. |
+| `mvn` is not recognised                       | Use `./mvnw` (`.\mvnw.cmd` on Windows), or run from IntelliJ IDEA.         |
 | Something fails on a fresh clone              | Share the first 40 lines of the error with the team before changing code.  |
 
 **Reset the demo data:** stop the application, delete `data/bank.db`, `data/bank.db-wal` and `data/bank.db-shm`, and start again. The demo accounts come back with the same numbers.
 
-**Optional:** run `mvn -N wrapper:wrapper` once and commit the generated `mvnw` files, so nobody needs to install Maven.
+**Optional:** run `mvn -N wrapper:wrapper` once and commit the generated `mvnw` files, so nobody needs to install Maven locally.
 
 </details>
 
@@ -138,23 +137,23 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 |                         | **Savings**                 | **Checking**                  | **Fixed Deposit**                                          |
 | ----------------------- | --------------------------- | ----------------------------- | ---------------------------------------------------------- |
-| Purpose                 | Save and earn interest      | Daily spending                | Lock money for a term                                      |
-| Opening deposit         | at least 1,000.00           | 0.00 or more                  | at least 5,000.00                                          |
-| Minimum balance         | 1,000.00                    | down to −1,000.00 (overdraft) | not applicable                                             |
+| Purpose                 | Save and earn interest      | Daily spending                | Lock money for a fixed term                                |
+| Opening deposit         | at least 1,000.00 EGP       | 0.00 EGP or more              | at least 5,000.00 EGP                                      |
+| Minimum balance         | 1,000.00 EGP                | down to -1,000.00 (overdraft) | not applicable                                             |
 | Interest                | 17.00% a year, paid monthly | none                          | 17.00% (12 months) or 17.75% (36 months), paid at maturity |
 | Deposit later           | yes                         | yes                           | no                                                         |
-| Withdraw / transfer out | keeping the minimum balance | down to the overdraft limit   | only after maturity, full balance                          |
+| Withdraw / transfer out | keeping the minimum balance | down to the overdraft limit   | only on or after maturity, full balance only               |
 
 ### Money operations
 
-- **Deposit** and **withdraw** are available now. **Transfer** (with a fee) is planned.
-- Limits are checked per transaction, per day and per month.
-- Failed operations return a precise error code and change nothing.
+- **Core Transactions:** Deposits, withdrawals, own-account transfers (0.00 EGP fee), and inter-customer transfers (with dynamic fee calculation and upfront fee quote).
+- **Velocity Limits:** Enforced per transaction, per calendar day, and per calendar month.
+- **Atomicity & Error Handling:** Failed operations return a deterministic error code (`Part 6.1` of Requirement Gathering) and roll back completely leaving all balances unchanged.
 
 ### Roles
 
-- **Customer:** manages own profile and accounts, deposits, withdraws, transfers, views own statements.
-- **Admin:** dashboard, search, freeze / unfreeze, audit log. An admin cannot move money or read passwords.
+- **Customer:** Manages own profile and accounts, deposits, withdraws, transfers, and views/exports own statements.
+- **Admin:** Views bank reserve metrics, searches customers and accounts, freezes/unfreezes accounts with audit reasons, triggers monthly interest jobs, and views the audit log. An admin cannot move money or read passwords (`ADM-07`).
 
 ---
 
@@ -170,15 +169,15 @@ flowchart TD
     RC --> SV
     SV --> D["Domain model<br/>rules of each account type"]
     SV --> R["Repositories (JPA)"]
-    R --> DB[("SQLite file")]
+    R --> DB[("SQLite file (WAL mode)")]
 ```
 
 | Layer        | Rule                                                          |
 | ------------ | ------------------------------------------------------------- |
 | Controllers  | Translate HTTP to service calls. **No banking rules here.**   |
-| Services     | Use cases and database transactions.                          |
+| Services     | Use cases and atomic `@Transactional` boundaries.             |
 | Domain       | What each account type allows. Plain Java, easy to unit-test. |
-| Repositories | Data access only.                                             |
+| Repositories | Data access only (Spring Data JPA).                           |
 
 ### Account life cycle
 
@@ -191,7 +190,7 @@ stateDiagram-v2
     CLOSED --> [*]
 ```
 
-A frozen account refuses every operation. A closed account stays in the system for its history and can never be reopened.
+A frozen account refuses every financial operation (`ACCOUNT_FROZEN`). A closed account stays in the system for its history and can never be reopened (`ACCOUNT_CLOSED`).
 
 ### Data model
 
@@ -227,41 +226,41 @@ erDiagram
     }
 ```
 
-> **Why piasters?** SQLite has no exact decimal type. Money is stored as whole piasters (100.25 EGP is stored as `10025`) and converted to `BigDecimal` in one place.
+> **Why piasters?** SQLite has no exact decimal type (`REAL` uses floating point). Money is stored as integer whole piasters (`BIGINT`, where `100.25 EGP` is stored as `10025`) and converted to `BigDecimal` (scale 2, `HALF_UP`) in one centralized converter.
 
 ---
 
 ## 📐 Business rules at a glance
 
-| Rule                               | Value                                                                          |
-| ---------------------------------- | ------------------------------------------------------------------------------ |
-| Currency                           | EGP, two decimals (more decimals are rejected, never rounded)                  |
-| Maximum per transaction            | **70,000.00**                                                                  |
-| Daily outgoing limit per account   | **120,000.00**                                                                 |
-| Monthly outgoing limit per account | **400,000.00**                                                                 |
-| Transfer fee (to another customer) | **0.1%**, minimum 0.50, maximum 20.00. None between a customer's own accounts. |
-| Savings minimum balance            | 1,000.00                                                                       |
-| Checking overdraft                 | 1,000.00                                                                       |
-| Fixed Deposit                      | minimum 5,000.00 · 12 months at 17.00% · 36 months at 17.75%                   |
-| Open accounts per customer         | 5                                                                              |
+| Rule                               | Value                                                                                            |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Currency                           | EGP, two decimals (more decimals are rejected with `INVALID_AMOUNT`)                             |
+| Maximum per transaction            | **70,000.00 EGP** (`BR-05`)                                                                      |
+| Daily outgoing limit per account   | **120,000.00 EGP** (`BR-06`)                                                                     |
+| Monthly outgoing limit per account | **400,000.00 EGP** (`BR-06`)                                                                     |
+| Transfer fee (to another customer) | **0.1%**, minimum **0.50 EGP**, maximum **20.00 EGP** (`BR-26`). Free for own accounts (`BR-27`). |
+| Savings minimum balance            | **1,000.00 EGP** (`BR-07`)                                                                       |
+| Checking overdraft                 | Down to **-1,000.00 EGP** (`BR-10`)                                                              |
+| Fixed Deposit                      | Minimum **5,000.00 EGP** (`BR-11`) · **12 months at 17.00%** · **36 months at 17.75%** (`BR-12`) |
+| Open accounts per customer         | Maximum **5** non-closed accounts (`BR-22`)                                                      |
 
 <details>
 <summary><b>Worked examples</b></summary>
 
-| Situation                                          | Result                                       |
-| -------------------------------------------------- | -------------------------------------------- |
-| Savings balance 1,500.00, withdraw 500.00          | Succeeds, balance 1,000.00                   |
-| Savings balance 1,500.00, withdraw 500.01          | Rejected: below the minimum balance          |
-| Checking balance 0.00, withdraw 1,000.00           | Succeeds, balance −1,000.00                  |
-| Transfer 100.00 to another customer                | Fee 0.50 (0.1% is 0.10, the minimum applies) |
-| Transfer 20,000.00 or 70,000.00                    | Fee 20.00 (the maximum)                      |
-| Monthly interest on a Savings balance of 12,000.00 | 12,000 × 17% ÷ 12 = 170.00                   |
-| Fixed Deposit 10,000.00 for 12 months              | Interest 1,700.00 at maturity                |
-| Fixed Deposit 5,000.00 for 36 months               | Interest 2,662.50 at maturity                |
+| Situation                                          | Result                                                               |
+| -------------------------------------------------- | -------------------------------------------------------------------- |
+| Savings balance 1,500.00, withdraw 500.00          | Succeeds, balance 1,000.00                                           |
+| Savings balance 1,500.00, withdraw 500.01          | Rejected (`MIN_BALANCE_VIOLATION`): below the 1,000.00 minimum       |
+| Checking balance 0.00, withdraw 1,000.00           | Succeeds, balance -1,000.00                                          |
+| Transfer 100.00 to another customer                | Fee 0.50 (0.1% is 0.10, so the 0.50 minimum applies)                 |
+| Transfer 20,000.00 or 70,000.00                    | Fee 20.00 (capped at the 20.00 maximum)                              |
+| Monthly interest on a Savings balance of 12,000.00 | 12,000 * 17% / 12 = 170.00 EGP                                       |
+| Fixed Deposit 10,000.00 for 12 months              | Interest 1,700.00 EGP at maturity                                    |
+| Fixed Deposit 5,000.00 for 36 months               | Interest 2,662.50 EGP at maturity                                    |
 
 </details>
 
-The limits and the fee follow InstaPay Egypt (checked in October 2026). The interest rates are demo values chosen to match published 2026 Egyptian bank products, and they can change, so every number is a configuration value.
+The transaction limits and transfer fees follow InstaPay Egypt benchmarks. The interest rates follow published Egyptian bank products, and every numerical threshold is externalized in `application.yml`.
 
 ---
 
@@ -269,7 +268,7 @@ The limits and the fee follow InstaPay Egypt (checked in October 2026). The inte
 
 Base path `/api/v1` · Authentication: **HTTP Basic** (email and password) · Responses: JSON
 
-**Available now**
+**Core Account & Transaction Endpoints**
 
 | Method | Path                             | Who      | Purpose                                 |
 | ------ | -------------------------------- | -------- | --------------------------------------- |
@@ -278,31 +277,31 @@ Base path `/api/v1` · Authentication: **HTTP Basic** (email and password) · Re
 | `POST` | `/accounts`                      | Customer | Open an account                         |
 | `GET`  | `/accounts/{number}`             | Owner    | Account details                         |
 | `POST` | `/accounts/{number}/close`       | Owner    | Close an account (balance must be 0.00) |
-| `POST` | `/accounts/{number}/deposits`    | Owner    | Deposit                                 |
-| `POST` | `/accounts/{number}/withdrawals` | Owner    | Withdraw                                |
+| `POST` | `/accounts/{number}/deposits`    | Owner    | Deposit funds                           |
+| `POST` | `/accounts/{number}/withdrawals` | Owner    | Withdraw funds                          |
 
-**Planned:** transfers and fee quote, statements and CSV export, profile, and the `/admin/**` endpoints. See the specification, Section 7.5.
+**Additional Planned Endpoints:** Transfers and fee quote (`/transfers`, `/transfers/quote`), paginated statements and CSV export (`/accounts/{number}/statements`), customer profile (`/profile`), and administrative endpoints (`/admin/**`). Full specifications are documented in [`milestone-2/requirement-gathering.pdf`](milestone-2/requirement-gathering.pdf).
 
-Every error has the same shape, so tools and tests can rely on the `error` code:
+Every error response follows a standardized JSON structure so automated tests can assert on the `error` code:
 
 ```json
 {
 	"timestamp": "2026-10-10T10:15:30Z",
 	"status": 422,
 	"error": "INSUFFICIENT_FUNDS",
-	"message": "The balance is not enough for this withdrawal.",
+	"message": "Insufficient available funds to complete this transaction.",
 	"path": "/api/v1/accounts/100000000032/withdrawals",
 	"details": []
 }
 ```
 
-|   HTTP    | Meaning                                                                                                             |
-| :-------: | ------------------------------------------------------------------------------------------------------------------- |
-|    400    | Invalid input (`VALIDATION_FAILED`, `INVALID_AMOUNT`)                                                               |
-| 401 / 403 | Not logged in / not allowed                                                                                         |
-|    404    | Account not found, **or not yours**                                                                                 |
-|    409    | Email already registered                                                                                            |
-|    422    | A business rule was broken (`INSUFFICIENT_FUNDS`, `LIMIT_EXCEEDED`, `MIN_BALANCE_VIOLATION`, `ACCOUNT_FROZEN`, ...) |
+|   HTTP    | Meaning                                                                                                                               |
+| :-------: | ------------------------------------------------------------------------------------------------------------------------------------- |
+|    400    | Invalid input (`INVALID_AMOUNT`, `INVALID_ACCOUNT_NUMBER`, `SAME_ACCOUNT_TRANSFER`)                                                   |
+| 401 / 403 | Unauthenticated / Unauthorized role (`ADMIN` attempting money operations)                                                             |
+|    404    | Account not found, **or belongs to another customer** (`ACCOUNT_NOT_FOUND` — SEC-02 IDOR protection)                                  |
+|    409    | Duplicate email address (`DUPLICATE_EMAIL`)                                                                                           |
+|    422    | Business rule violation (`INSUFFICIENT_FUNDS`, `TXN_LIMIT_EXCEEDED`, `MIN_BALANCE_VIOLATION`, `FD_NOT_MATURE`, `ACCOUNT_FROZEN`, ...) |
 
 Try the API with Postman or Swagger UI. (In PowerShell, `curl` is an alias; use `curl.exe` for the command line.)
 
@@ -310,92 +309,90 @@ Try the API with Postman or Swagger UI. (In PowerShell, `curl` is an alias; use 
 
 ## 🧪 Testing
 
-The system is built to be tested at every level.
+The system is engineered to be verified across all testing levels:
 
-| Level                                                   | Tools                        | State |
-| ------------------------------------------------------- | ---------------------------- | :---: |
-| Static testing (requirements and code review)           | Jira, pull-request checklist |  ⏳   |
-| Unit tests (account rules, converters, account numbers) | JUnit 5                      |  ⏳   |
-| Integration tests (database, limits, parallel requests) | Spring Boot Test             |  ⏳   |
-| API and security tests (access control, error codes)    | MockMvc                      |  ⏳   |
-| UI automation                                           | Selenium 4                   |  ⏳   |
-| API collection                                          | Postman                      |  ⏳   |
-| Manual test plan and test cases                         | From the specification       |  ⏳   |
+| Level                                                   | Tools                              | State |
+| ------------------------------------------------------- | ---------------------------------- | :---: |
+| Static testing (requirements & peer-review checklists)  | GitHub PRs, Jira, RTM              |  🔄   |
+| Unit tests (domain account rules, converters, Luhn IDs) | JUnit 5, Mockito                   |  ⏳   |
+| Integration tests (SQLite WAL, limits, concurrency)     | Spring Boot Test                   |  ⏳   |
+| API and security tests (RBAC, IDOR 404, error codes)    | MockMvc                            |  ⏳   |
+| UI automation (using frozen HTML element IDs)           | Selenium 4 WebDriver (POM)         |  ⏳   |
+| API collection & P95 latency assertions (< 500 ms)      | Postman & Newman                   |  ⏳   |
+| Structured manual test cases                            | EP, BVA, Decision Tables, Use Case |  ⏳   |
 
 ```bash
 mvn test
 ```
 
-- Tests never touch `data/bank.db`; each test context uses its own database file under `target/`.
-      <!-- - Every test case names the requirement it checks (for example `TC-S-01` checks `SEC-02`). The specification, Section 8, lists ready-made boundary cases. -->
-- Test design techniques: equivalence partitioning, boundary value analysis, decision tables, state transition and use-case testing.
+- Tests never touch `data/bank.db`; each test context uses an isolated database under `target/`.
+- Every test case traces directly to Requirement IDs (`AUTH`, `CUS`, `ACC`, `TXN`, `STM`, `ADM`, `JOB`, `AUD`, `NFR`, `SEC`) and Business Rules (`BR-01` to `BR-29`) defined in [`milestone-2/requirement-gathering.pdf`](milestone-2/requirement-gathering.pdf).
 
 ---
 
 ## 🔐 Security
 
-- **Passwords:** BCrypt, 8 to 64 characters with upper-case, lower-case and a digit.
-- **Access control:** deny by default; role and ownership checks on the server. Someone else's account looks exactly like a missing account (HTTP 404), so account numbers cannot be probed.
-- **CSRF:** tokens on every web form. The stateless API uses HTTP Basic and no cookies.
-- **Sessions:** 15 minutes of inactivity; cookies are `HttpOnly` and `SameSite=Lax`.
-- **Secrets:** nothing sensitive in Git. `.env` and database files are ignored; credentials come from environment variables.
-- **Swagger** is disabled outside the dev profile.
-
-<!-- The full list (SEC-01 to SEC-11) is in the specification, Section 6. -->
+- **Passwords (`AUTH-05`, `SEC-03`):** Salted BCrypt hashing; 8 to 64 characters requiring uppercase, lowercase, and a digit; 5-attempt / 15-minute login lockout (`AUTH-06`).
+- **Access Control & IDOR (`SEC-01`, `SEC-02`):** Deny by default; role and ownership checks enforced on the server. Requesting another customer's account returns **HTTP 404 (`ACCOUNT_NOT_FOUND`)**—never 403—so account existence cannot be enumerated.
+- **CSRF (`SEC-05`):** Synchronizer tokens on every state-changing web form. The stateless REST API uses HTTP Basic.
+- **Sessions (`AUTH-07`, `SEC-06`):** 15 minutes of inactivity auto-expiry; cookies configured with `HttpOnly` and `SameSite=Lax`.
+- **Secrets (`SEC-08`):** Zero secrets or database files in Git (`.env` and `*.db` excluded via `.gitignore`); bootstrap credentials injected via environment variables.
+- **Swagger (`SEC-08`):** Disabled (or restricted to Admin) outside the `dev` profile.
 
 ---
 
 ## ⚙️ Configuration
 
-All business numbers live in [`application.yml`](src/main/resources/application.yml). Changing a limit or a rate never needs a code change.
+All business parameters live in [`application.yml`](src/main/resources/application.yml). Adjusting a limit, fee, or interest rate never requires modifying Java code.
 
-| Setting                                                       | Purpose                                                                                                        |
-| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `bank.limits.*`                                               | Per-transaction, daily and monthly limits                                                                      |
-| `bank.fee.*`                                                  | Transfer fee rate, minimum and maximum                                                                         |
-| `bank.savings.*` · `bank.checking.*` · `bank.fixed-deposit.*` | Rates, minimum balance, overdraft, terms                                                                       |
-| `bank.admin.email` · `bank.admin.password`                    | First administrator. In production use the environment variables `BANK_ADMIN_EMAIL` and `BANK_ADMIN_PASSWORD`. |
-| `spring.datasource.url`                                       | SQLite file and settings                                                                                       |
+| Setting                                                       | Purpose                                                                                                  |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `bank.limits.*`                                               | Per-transaction (`70,000`), daily (`120,000`) and monthly (`400,000`) limits                             |
+| `bank.fee.*`                                                  | Transfer fee rate (`0.1%`), minimum (`0.50 EGP`) and maximum (`20.00 EGP`)                               |
+| `bank.savings.*` · `bank.checking.*` · `bank.fixed-deposit.*` | Interest rates, minimum balances, overdraft limit, and lock-in terms                                     |
+| `bank.admin.email` · `bank.admin.password`                    | Initial administrator bootstrap (use `BANK_ADMIN_EMAIL` and `BANK_ADMIN_PASSWORD` environment variables) |
+| `spring.datasource.url`                                       | SQLite database path, WAL mode, and busy-timeout settings                                                |
 
-Profiles: **`dev`** (demo data and Swagger) and **`test`** (a fresh database file for each test run).
+Profiles: **`dev`** (deterministic demo seed data and Swagger UI) and **`test`** (isolated database per test run).
 
 ---
 
 ## 🗂️ Project structure
 
 ```text
-src/main/java/com/depi/bank/
-├── domain/        entities, account rules, money helpers, converters
-├── exception/     BankException and ErrorCode
-├── service/       use cases: registration, accounts, deposit and withdraw
-├── repository/    Spring Data repositories
-├── api/           REST controllers, DTOs, one error handler
-├── web/           page controllers
-└── config/        security, clock, properties, start-up loaders
-src/main/resources/
-├── application.yml, application-dev.yml
-├── templates/     Thymeleaf pages (every element a test needs has a stable id)
-└── static/css/
-src/test/java/     unit, integration and API security tests
-docs/              specification, risk plan, demo data
-data/              SQLite file (created at run time, ignored by Git)
+banking-transaction-system/
+├── milestone-1/   Project Proposal, Plan, Roles Matrix, KPIs, and Risk Assessment PDFs
+├── milestone-2/   Requirement Gathering Specification PDF (Stakeholders, Stories, FRs, NFRs, Rules)
+├── src/main/java/com/depi/bank/
+│   ├── domain/        entities, account hierarchy rules, money helpers, piaster converters
+│   ├── exception/     BankException and standardized ErrorCode enum
+│   ├── service/       transactional use cases: auth, accounts, deposits, withdrawals, transfers
+│   ├── repository/    Spring Data JPA repositories
+│   ├── api/           REST controllers, DTOs, centralized exception handler
+│   ├── web/           Thymeleaf page controllers
+│   └── config/        Spring Security, injectable Clock, configuration properties, seed loader
+├── src/main/resources/
+│   ├── application.yml, application-dev.yml
+│   ├── templates/     Thymeleaf pages (with permanent HTML element IDs for Selenium)
+│   └── static/css/
+├── src/test/java/     JUnit 5 unit, concurrency, integration, and MockMvc security tests
+└── data/              SQLite database file (created at runtime, ignored by Git)
 ```
 
 ---
 
 ## 📚 Documentation
 
-| Document Category      | Document Title                    | Location / File                                                                                          |
-| :--------------------- | :-------------------------------- | :------------------------------------------------------------------------------------------------------- |
-| **Project Management** | Project Proposal                  | [`milestone-1/project-proposal`](milestone-1/project-proposal.pdf)                                       |
-| **Project Management** | Project Plan & Milestones         | [`milestone-1/project-plan`](milestone-1/project-plan.pdf)                                               |
-| **Project Management** | Task Assignment & Roles (RACI)    | [`milestone-1/task-assignment-and-roles`](milestone-1/task-assignment-and-roles.pdf)                     |
-| **Project Management** | Risk Assessment & Mitigation Plan | [`milestone-1/risk-assessment-and-mitigation-plan`](milestone-1/risk-assessment-and-mitigation-plan.pdf) |
-| **Project Management** | KPIs & Success Metrics            | [`milestone-1/KPIs`](milestone-1/KPIs.pdf)                                                               |
+All project management and engineering specification documents are self-contained and organized by milestone:
 
-<!-- Screenshots can be added later, for example:
-![Dashboard](docs/images/dashboard.png)
--->
+| Milestone       | Document Category             | Document Title                       | Location / File                                                                                             |
+| :-------------: | :---------------------------- | :----------------------------------- | :---------------------------------------------------------------------------------------------------------- |
+| **Milestone 1** | Project Management            | Project Proposal                     | [`milestone-1/project-proposal.pdf`](milestone-1/project-proposal.pdf)                                      |
+| **Milestone 1** | Project Management            | Project Plan                         | [`milestone-1/project-plan.pdf`](milestone-1/project-plan.pdf)                                              |
+| **Milestone 1** | Project Management            | Task Assignment & Peer-Review Matrix | [`milestone-1/task-assignment-and-roles.pdf`](milestone-1/task-assignment-and-roles.pdf)                    |
+| **Milestone 1** | Project Management            | Key Performance Indicators (KPIs)    | [`milestone-1/KPIs.pdf`](milestone-1/KPIs.pdf)                                                              |
+| **Milestone 1** | Project Management            | Risk Assessment & Mitigation Plan    | [`milestone-1/risk-assessment-and-mitigation-plan.pdf`](milestone-1/risk-assessment-and-mitigation-plan.pdf) |
+| **Milestone 2** | Requirements & Specifications | Requirement Gathering                | [`milestone-2/requirement-gathering.pdf`](milestone-2/requirement-gathering.pdf)                            |
 
 ---
 
@@ -405,11 +402,11 @@ data/              SQLite file (created at run time, ignored by Git)
 | :-: | -------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |  1  | **Muhammad Sayyid**  | Tech Lead & Software Architect     | [![@M07ammadSayed](https://img.shields.io/badge/@M07ammadSayed-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/M07ammadSayed)                                                |
 |  2  | **Somia Rashad**     | QA Lead & Test Automation Engineer | [![@SomaiAghaa](https://img.shields.io/badge/@SomaiAghaa-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/SomaiAghaa)                                                         |
-|  3  | **Asmaa Mohamed**    | Frontend & UI                      | [![@Asmaa--Mohamed28](https://img.shields.io/badge/@Asmaa--Mohamed28-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Asmaa-Mohamed28)                                        |
-|  4  | **Aladdin Ahmed**    | Core Banking Logic                 | [![@AlaadinAhmed](https://img.shields.io/badge/@AlaadinAhmed-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AlaadinAhmed)                                                   |
-|  5  | **Aghapy Antonious** | Backend Services & Admin           | [![@aghapyantoniouswaheeb--dotcom](https://img.shields.io/badge/@aghapyantoniouswaheeb--dotcom-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/aghapyantoniouswaheeb-dotcom) |
+|  3  | **Asmaa Mohamed**    | Frontend & UI Engineer             | [![@Asmaa--Mohamed28](https://img.shields.io/badge/@Asmaa--Mohamed28-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Asmaa-Mohamed28)                                        |
+|  4  | **Aladdin Ahmed**    | Core Banking Logic Engineer        | [![@AlaadinAhmed](https://img.shields.io/badge/@AlaadinAhmed-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AlaadinAhmed)                                                   |
+|  5  | **Aghapy Antonious** | Backend Services & Admin Engineer  | [![@aghapyantoniouswaheeb--dotcom](https://img.shields.io/badge/@aghapyantoniouswaheeb--dotcom-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/aghapyantoniouswaheeb-dotcom) |
 
-<!-- Every deliverable has a primary owner and a secondary reviewer. The full matrix and the work breakdown are in the [specification](docs/specification/Banking_System_Requirements_v2_6.docx), Section 9.2. -->
+> Full deliverable ownership and cross-functional review obligations are detailed in [`milestone-1/task-assignment-and-roles.pdf`](milestone-1/task-assignment-and-roles.pdf).
 
 ---
 
@@ -424,41 +421,41 @@ main   ← stable, protected
       └── docs/short-name
 ```
 
-- **No direct push** to `main` or `dev`. Work on a branch created from `dev` and open a pull request into `dev`.
-- **Review:** every pull request has a reviewer named in the peer-review matrix. Changes that touch money or security also go through the Tech Lead.
-- **Commit messages:** `feat:`, `fix:`, `test:`, `docs:`, `refactor:` or `chore:`, then a short description.
-- **Definition of Done:** reviewed pull request, tests pass, acceptance criteria met, test cases written and executed, no open Critical or High defect, documentation updated.
+- **No direct push** to `main` or `dev`. Work on a branch and open a Pull Request.
+- **Review:** every Pull Request is reviewed according to the Peer-Review Matrix. Changes touching money calculations or security filter chains also require Tech Lead sign-off.
+- **Commit messages:** `feat:`, `fix:`, `test:`, `docs:`, `refactor:` or `chore:`, followed by a concise summary.
+- **Definition of Done:** reviewed Pull Request, unit/integration tests pass, acceptance criteria met, RTM updated, zero open Critical or High defects, documentation synced.
 
 **Rules of the road**
 
-- Money is always `BigDecimal`. Never `double`.
-- No business rules in controllers or templates. Put them in `domain/` or `service/`.
-- Do not rename element ids without telling whoever owns the UI tests.
-- Never commit `.env` files or database files.
+- Money is always `BigDecimal` in Java and whole piasters (`BIGINT`) in SQLite. Never `double` or `float`.
+- Zero business calculation rules in controllers or Thymeleaf templates; keep domain logic inside `domain/` and `service/`.
+- Do not rename HTML element IDs after the Week 4 UI freeze without coordinating with the QA Lead.
+- Never commit `.env` files or SQLite database files (`.db`, `.sqlite`).
 
 ---
 
 ## 🗺️ Roadmap
 
-| Week | Goal                                                                          |
-| :--: | ----------------------------------------------------------------------------- |
-|  1   | Specification signed off, repository and Jira ready, project skeleton running |
-|  2   | Master Test Plan and RTM; architecture and database setup                     |
-|  3   | Security and authentication module                                            |
-|  4   | Core account domain and logic; front-end pages with permanent element IDs     |
-|  5   | Postman API test suite; money operations and scheduled jobs complete          |
-|  6   | Selenium UI suite; services, admin and CSV export                             |
-|  7   | Regression, defect fixing, documentation and demo preparation                 |
-|  8   | Final dry run and final presentation                                          |
+| Week | Goal                                                                                           |
+| :--: | ---------------------------------------------------------------------------------------------- |
+|  1   | Project foundations, governance documents, repository setup, and SQLite WAL architecture spike |
+|  2   | Requirement Gathering sign-off, Master Test Plan & RTM, domain classes, registration & auth    |
+|  3   | Core banking MVP: accounts, deposits, withdrawals, atomic transfers with fees, REST APIs       |
+|  4   | Statements, CSV export, admin dashboard, audit log, scheduled jobs, and UI element ID freeze   |
+|  5   | Selenium 4 UI automation suite, Postman API collection, and OWASP security test execution      |
+|  6   | Static analysis (SonarLint / SpotBugs), OWASP dependency scan, bug fixing, full regression     |
+|  7   | OpenAPI/Swagger verification, Jira test reports, JaCoCo coverage analysis, and demo rehearsals |
+|  8   | Buffer week, backup demo recording, and final project presentation & defense                   |
 
 ---
 
 ## ⚠️ Known limitations
 
-- **Spring Boot 3.5** no longer receives free updates (since June 2026). That is acceptable for a local demo; a dependency check is planned before the demo, and an upgrade to Spring Boot 4.1 is possible later.
-- **SQLite** allows one writer at a time and has no exact decimal type. The design handles both: money in piasters, one connection, immediate transactions.
-- Deposits are simulated cash deposits and all money is fictional.
-- The application is meant to run locally. It is not designed to be exposed to the internet.
+- **Spring Boot 3.5** reached the end of free commercial security updates in June 2026 (`Risk R-10`). This is accepted for a local offline demonstration; an OWASP Dependency-Check scan is scheduled prior to delivery, and the production upgrade path to Spring Boot 4.1 is documented.
+- **SQLite** permits a single concurrent writer and lacks a native exact decimal type (`Risk R-05`). Both are mitigated architecturally: money is stored as integer piasters (`BIGINT`), and the connection pool uses WAL mode with immediate transaction locking.
+- Deposits simulate cash counter deposits (`TXN-01`) and all seed data is strictly fictional.
+- The application is designed for local execution and demonstration, not public internet exposure.
 
 ---
 
@@ -466,7 +463,7 @@ main   ← stable, protected
 
 Released under the **MIT License**. See the [LICENSE](LICENSE) file.
 
-Third-party libraries (Spring Boot, Hibernate, SQLite JDBC, Thymeleaf, springdoc and others) keep their own licenses.
+Third-party libraries (Spring Boot, Hibernate, SQLite JDBC, Thymeleaf, springdoc and others) retain their respective licenses.
 
 <div align="center">
 
