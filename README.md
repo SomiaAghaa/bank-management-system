@@ -139,7 +139,7 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 | ----------------------- | --------------------------- | ----------------------------- | ---------------------------------------------------------- |
 | Purpose                 | Save and earn interest      | Daily spending                | Lock money for a fixed term                                |
 | Opening deposit         | at least 1,000.00 EGP       | 0.00 EGP or more              | at least 5,000.00 EGP                                      |
-| Minimum balance         | 1,000.00 EGP                | down to -1,000.00 (overdraft) | not applicable                                             |
+| Minimum balance         | 1,000.00 EGP                | down to −1,000.00 (overdraft) | not applicable                                             |
 | Interest                | 17.00% a year, paid monthly | none                          | 17.00% (12 months) or 17.75% (36 months), paid at maturity |
 | Deposit later           | yes                         | yes                           | no                                                         |
 | Withdraw / transfer out | keeping the minimum balance | down to the overdraft limit   | only on or after maturity, full balance only               |
@@ -232,17 +232,17 @@ erDiagram
 
 ## 📐 Business rules at a glance
 
-| Rule                               | Value                                                                                            |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Currency                           | EGP, two decimals (more decimals are rejected with `INVALID_AMOUNT`)                             |
-| Maximum per transaction            | **70,000.00 EGP** (`BR-05`)                                                                      |
-| Daily outgoing limit per account   | **120,000.00 EGP** (`BR-06`)                                                                     |
-| Monthly outgoing limit per account | **400,000.00 EGP** (`BR-06`)                                                                     |
+| Rule                               | Value                                                                          |
+| ---------------------------------- | ------------------------------------------------------------------------------ |
+| Currency                           | EGP, two decimals (more decimals are rejected with `INVALID_AMOUNT`)           |
+| Maximum per transaction            | **70,000.00 EGP** (`BR-05`)                                                    |
+| Daily outgoing limit per account   | **120,000.00 EGP** (`BR-06`)                                                   |
+| Monthly outgoing limit per account | **400,000.00 EGP** (`BR-06`)                                                   |
 | Transfer fee (to another customer) | **0.1%**, minimum **0.50 EGP**, maximum **20.00 EGP** (`BR-26`). Free for own accounts (`BR-27`). |
-| Savings minimum balance            | **1,000.00 EGP** (`BR-07`)                                                                       |
-| Checking overdraft                 | Down to **-1,000.00 EGP** (`BR-10`)                                                              |
+| Savings minimum balance            | **1,000.00 EGP** (`BR-07`)                                                     |
+| Checking overdraft                 | Down to **−1,000.00 EGP** (`BR-10`)                                            |
 | Fixed Deposit                      | Minimum **5,000.00 EGP** (`BR-11`) · **12 months at 17.00%** · **36 months at 17.75%** (`BR-12`) |
-| Open accounts per customer         | Maximum **5** non-closed accounts (`BR-22`)                                                      |
+| Open accounts per customer         | Maximum **5** non-closed accounts (`BR-22`)                                    |
 
 <details>
 <summary><b>Worked examples</b></summary>
@@ -251,10 +251,10 @@ erDiagram
 | -------------------------------------------------- | -------------------------------------------------------------------- |
 | Savings balance 1,500.00, withdraw 500.00          | Succeeds, balance 1,000.00                                           |
 | Savings balance 1,500.00, withdraw 500.01          | Rejected (`MIN_BALANCE_VIOLATION`): below the 1,000.00 minimum       |
-| Checking balance 0.00, withdraw 1,000.00           | Succeeds, balance -1,000.00                                          |
+| Checking balance 0.00, withdraw 1,000.00           | Succeeds, balance −1,000.00                                          |
 | Transfer 100.00 to another customer                | Fee 0.50 (0.1% is 0.10, so the 0.50 minimum applies)                 |
 | Transfer 20,000.00 or 70,000.00                    | Fee 20.00 (capped at the 20.00 maximum)                              |
-| Monthly interest on a Savings balance of 12,000.00 | 12,000 * 17% / 12 = 170.00 EGP                                       |
+| Monthly interest on a Savings balance of 12,000.00 | 12,000 × 17% ÷ 12 = 170.00 EGP                                       |
 | Fixed Deposit 10,000.00 for 12 months              | Interest 1,700.00 EGP at maturity                                    |
 | Fixed Deposit 5,000.00 for 36 months               | Interest 2,662.50 EGP at maturity                                    |
 
@@ -295,12 +295,12 @@ Every error response follows a standardized JSON structure so automated tests ca
 }
 ```
 
-|   HTTP    | Meaning                                                                                                                               |
-| :-------: | ------------------------------------------------------------------------------------------------------------------------------------- |
-|    400    | Invalid input (`INVALID_AMOUNT`, `INVALID_ACCOUNT_NUMBER`, `SAME_ACCOUNT_TRANSFER`)                                                   |
-| 401 / 403 | Unauthenticated / Unauthorized role (`ADMIN` attempting money operations)                                                             |
-|    404    | Account not found, **or belongs to another customer** (`ACCOUNT_NOT_FOUND` — SEC-02 IDOR protection)                                  |
-|    409    | Duplicate email address (`DUPLICATE_EMAIL`)                                                                                           |
+|   HTTP    | Meaning                                                                                                                     |
+| :-------: | --------------------------------------------------------------------------------------------------------------------------- |
+|    400    | Invalid input (`INVALID_AMOUNT`, `INVALID_ACCOUNT_NUMBER`, `SAME_ACCOUNT_TRANSFER`)                                         |
+| 401 / 403 | Unauthenticated / Unauthorized role (`ADMIN` attempting money operations)                                                   |
+|    404    | Account not found, **or belongs to another customer** (`ACCOUNT_NOT_FOUND` — SEC-02 IDOR protection)                        |
+|    409    | Duplicate email address (`DUPLICATE_EMAIL`)                                                                                 |
 |    422    | Business rule violation (`INSUFFICIENT_FUNDS`, `TXN_LIMIT_EXCEEDED`, `MIN_BALANCE_VIOLATION`, `FD_NOT_MATURE`, `ACCOUNT_FROZEN`, ...) |
 
 Try the API with Postman or Swagger UI. (In PowerShell, `curl` is an alias; use `curl.exe` for the command line.)
@@ -309,17 +309,17 @@ Try the API with Postman or Swagger UI. (In PowerShell, `curl` is an alias; use 
 
 ## 🧪 Testing
 
-The system is engineered to be verified across all testing levels:
+The system is engineered to be verified across all testing levels, with dedicated separation between **Functional QA** (led by the QA Lead) and **Application Security Testing** (led by the Tech Lead & AppSec Engineer):
 
-| Level                                                   | Tools                              | State |
-| ------------------------------------------------------- | ---------------------------------- | :---: |
-| Static testing (requirements & peer-review checklists)  | GitHub PRs, Jira, RTM              |  🔄   |
-| Unit tests (domain account rules, converters, Luhn IDs) | JUnit 5, Mockito                   |  ⏳   |
-| Integration tests (SQLite WAL, limits, concurrency)     | Spring Boot Test                   |  ⏳   |
-| API and security tests (RBAC, IDOR 404, error codes)    | MockMvc                            |  ⏳   |
-| UI automation (using frozen HTML element IDs)           | Selenium 4 WebDriver (POM)         |  ⏳   |
-| API collection & P95 latency assertions (< 500 ms)      | Postman & Newman                   |  ⏳   |
-| Structured manual test cases                            | EP, BVA, Decision Tables, Use Case |  ⏳   |
+| Level                                                                 | Tools & Techniques                            | Owner                   | State |
+| --------------------------------------------------------------------- | --------------------------------------------- | ----------------------- | :---: |
+| Static testing (requirements & peer-review checklists)                | GitHub PRs, Jira, RTM                         | QA Lead & Tech Lead     |  🔄   |
+| Unit tests (domain account rules, converters, Luhn IDs)               | JUnit 5, Mockito                              | Core Logic & Tech Lead  |  ⏳   |
+| Integration tests (SQLite WAL, limits, parallel concurrency)          | Spring Boot Test                              | Tech Lead               |  ⏳   |
+| **Application Security & OWASP Top 10 Suite (RBAC, IDOR 404, CSRF)**  | **MockMvc, OWASP Dependency-Check, SonarLint**| **Tech Lead & AppSec**  |  ⏳   |
+| Functional UI automation (using frozen HTML element IDs)              | Selenium 4 WebDriver (Page Object Model)      | QA Lead                 |  ⏳   |
+| Functional API collection & P95 latency assertions (< 500 ms)         | Postman & Newman                              | QA Lead                 |  ⏳   |
+| Structured functional manual test cases                               | EP, BVA, Decision Tables, State Transition    | QA Lead                 |  ⏳   |
 
 ```bash
 mvn test
@@ -331,6 +331,8 @@ mvn test
 ---
 
 ## 🔐 Security
+
+All application security architecture, audit logging (`AUD`), and vulnerability verification (`SEC-01` to `SEC-11`) are engineered and tested by the **Tech Lead & AppSec Engineer**:
 
 - **Passwords (`AUTH-05`, `SEC-03`):** Salted BCrypt hashing; 8 to 64 characters requiring uppercase, lowercase, and a digit; 5-attempt / 15-minute login lockout (`AUTH-06`).
 - **Access Control & IDOR (`SEC-01`, `SEC-02`):** Deny by default; role and ownership checks enforced on the server. Requesting another customer's account returns **HTTP 404 (`ACCOUNT_NOT_FOUND`)**—never 403—so account existence cannot be enumerated.
@@ -345,13 +347,13 @@ mvn test
 
 All business parameters live in [`application.yml`](src/main/resources/application.yml). Adjusting a limit, fee, or interest rate never requires modifying Java code.
 
-| Setting                                                       | Purpose                                                                                                  |
-| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `bank.limits.*`                                               | Per-transaction (`70,000`), daily (`120,000`) and monthly (`400,000`) limits                             |
-| `bank.fee.*`                                                  | Transfer fee rate (`0.1%`), minimum (`0.50 EGP`) and maximum (`20.00 EGP`)                               |
-| `bank.savings.*` · `bank.checking.*` · `bank.fixed-deposit.*` | Interest rates, minimum balances, overdraft limit, and lock-in terms                                     |
-| `bank.admin.email` · `bank.admin.password`                    | Initial administrator bootstrap (use `BANK_ADMIN_EMAIL` and `BANK_ADMIN_PASSWORD` environment variables) |
-| `spring.datasource.url`                                       | SQLite database path, WAL mode, and busy-timeout settings                                                |
+| Setting                                                       | Purpose                                                                                                        |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `bank.limits.*`                                               | Per-transaction (`70,000`), daily (`120,000`) and monthly (`400,000`) limits                                   |
+| `bank.fee.*`                                                  | Transfer fee rate (`0.1%`), minimum (`0.50 EGP`) and maximum (`20.00 EGP`)                                     |
+| `bank.savings.*` · `bank.checking.*` · `bank.fixed-deposit.*` | Interest rates, minimum balances, overdraft limit, and lock-in terms                                           |
+| `bank.admin.email` · `bank.admin.password`                    | Initial administrator bootstrap (use `BANK_ADMIN_EMAIL` and `BANK_ADMIN_PASSWORD` environment variables)       |
+| `spring.datasource.url`                                       | SQLite database path, WAL mode, and busy-timeout settings                                                      |
 
 Profiles: **`dev`** (deterministic demo seed data and Swagger UI) and **`test`** (isolated database per test run).
 
@@ -366,7 +368,7 @@ banking-transaction-system/
 ├── src/main/java/com/depi/bank/
 │   ├── domain/        entities, account hierarchy rules, money helpers, piaster converters
 │   ├── exception/     BankException and standardized ErrorCode enum
-│   ├── service/       transactional use cases: auth, accounts, deposits, withdrawals, transfers
+│   ├── service/       transactional use cases: auth, accounts, deposits, withdrawals, transfers, audit
 │   ├── repository/    Spring Data JPA repositories
 │   ├── api/           REST controllers, DTOs, centralized exception handler
 │   ├── web/           Thymeleaf page controllers
@@ -385,26 +387,26 @@ banking-transaction-system/
 
 All project management and engineering specification documents are self-contained and organized by milestone:
 
-| Milestone       | Document Category             | Document Title                       | Location / File                                                                                             |
-| :-------------: | :---------------------------- | :----------------------------------- | :---------------------------------------------------------------------------------------------------------- |
-| **Milestone 1** | Project Management            | Project Proposal                     | [`milestone-1/project-proposal.pdf`](milestone-1/project-proposal.pdf)                                      |
-| **Milestone 1** | Project Management            | Project Plan                         | [`milestone-1/project-plan.pdf`](milestone-1/project-plan.pdf)                                              |
-| **Milestone 1** | Project Management            | Task Assignment & Peer-Review Matrix | [`milestone-1/task-assignment-and-roles.pdf`](milestone-1/task-assignment-and-roles.pdf)                    |
-| **Milestone 1** | Project Management            | Key Performance Indicators (KPIs)    | [`milestone-1/KPIs.pdf`](milestone-1/KPIs.pdf)                                                              |
-| **Milestone 1** | Project Management            | Risk Assessment & Mitigation Plan    | [`milestone-1/risk-assessment-and-mitigation-plan.pdf`](milestone-1/risk-assessment-and-mitigation-plan.pdf) |
-| **Milestone 2** | Requirements & Specifications | Requirement Gathering                | [`milestone-2/requirement-gathering.pdf`](milestone-2/requirement-gathering.pdf)                            |
+| Milestone       | Document Category             | Document Title                         | Location / File                                                                                          |
+| :-------------: | :---------------------------- | :------------------------------------- | :------------------------------------------------------------------------------------------------------- |
+| **Milestone 1** | Project Management            | Project Proposal                       | [`milestone-1/project-proposal.pdf`](milestone-1/project-proposal.pdf)                                   |
+| **Milestone 1** | Project Management            | Project Plan                           | [`milestone-1/project-plan.pdf`](milestone-1/project-plan.pdf)                                           |
+| **Milestone 1** | Project Management            | Task Assignment & Peer-Review Matrix   | [`milestone-1/task-assignment-and-roles.pdf`](milestone-1/task-assignment-and-roles.pdf)                 |
+| **Milestone 1** | Project Management            | Key Performance Indicators (KPIs)      | [`milestone-1/KPIs.pdf`](milestone-1/KPIs.pdf)                                                           |
+| **Milestone 1** | Project Management            | Risk Assessment & Mitigation Plan      | [`milestone-1/risk-assessment-and-mitigation-plan.pdf`](milestone-1/risk-assessment-and-mitigation-plan.pdf) |
+| **Milestone 2** | Requirements & Specifications | Requirement Gathering                  | [`milestone-2/requirement-gathering.pdf`](milestone-2/requirement-gathering.pdf)                         |
 
 ---
 
 ## 👥 Team
 
-|  #  | Name                 | Role                               | GitHub                                                                                                                                                                                                   |
-| :-: | -------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|  1  | **Muhammad Sayyid**  | Tech Lead & Software Architect     | [![@M07ammadSayed](https://img.shields.io/badge/@M07ammadSayed-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/M07ammadSayed)                                                |
-|  2  | **Somia Rashad**     | QA Lead & Test Automation Engineer | [![@SomaiAghaa](https://img.shields.io/badge/@SomaiAghaa-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/SomaiAghaa)                                                         |
-|  3  | **Asmaa Mohamed**    | Frontend & UI Engineer             | [![@Asmaa--Mohamed28](https://img.shields.io/badge/@Asmaa--Mohamed28-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Asmaa-Mohamed28)                                        |
-|  4  | **Aladdin Ahmed**    | Core Banking Logic Engineer        | [![@AlaadinAhmed](https://img.shields.io/badge/@AlaadinAhmed-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AlaadinAhmed)                                                   |
-|  5  | **Aghapy Antonious** | Backend Services & Admin Engineer  | [![@aghapyantoniouswaheeb--dotcom](https://img.shields.io/badge/@aghapyantoniouswaheeb--dotcom-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/aghapyantoniouswaheeb-dotcom) |
+|  #  | Name                 | Role                                            | GitHub                                                                                                                                                                                                   |
+| :-: | -------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|  1  | **Muhammad Sayyid**  | Tech Lead, Software Architect & AppSec Engineer | [![@M07ammadSayed](https://img.shields.io/badge/@M07ammadSayed-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/M07ammadSayed)                                                |
+|  2  | **Somia Rashad**     | QA Lead & Test Automation Engineer              | [![@SomaiAghaa](https://img.shields.io/badge/@SomaiAghaa-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/SomaiAghaa)                                                         |
+|  3  | **Asmaa Mohamed**    | Frontend & UI Engineer                          | [![@Asmaa--Mohamed28](https://img.shields.io/badge/@Asmaa--Mohamed28-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Asmaa-Mohamed28)                                        |
+|  4  | **Aladdin Ahmed**    | Core Banking Logic Engineer                     | [![@AlaadinAhmed](https://img.shields.io/badge/@AlaadinAhmed-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AlaadinAhmed)                                                   |
+|  5  | **Aghapy Antonious** | Backend Services & Admin Engineer               | [![@aghapyantoniouswaheeb--dotcom](https://img.shields.io/badge/@aghapyantoniouswaheeb--dotcom-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/aghapyantoniouswaheeb-dotcom) |
 
 > Full deliverable ownership and cross-functional review obligations are detailed in [`milestone-1/task-assignment-and-roles.pdf`](milestone-1/task-assignment-and-roles.pdf).
 
@@ -422,9 +424,9 @@ main   ← stable, protected
 ```
 
 - **No direct push** to `main` or `dev`. Work on a branch and open a Pull Request.
-- **Review:** every Pull Request is reviewed according to the Peer-Review Matrix. Changes touching money calculations or security filter chains also require Tech Lead sign-off.
+- **Review:** every Pull Request is reviewed according to the Peer-Review Matrix. Changes touching money calculations or security filter chains also require Tech Lead & AppSec sign-off.
 - **Commit messages:** `feat:`, `fix:`, `test:`, `docs:`, `refactor:` or `chore:`, followed by a concise summary.
-- **Definition of Done:** reviewed Pull Request, unit/integration tests pass, acceptance criteria met, RTM updated, zero open Critical or High defects, documentation synced.
+- **Definition of Done:** reviewed Pull Request, unit/integration/security tests pass, acceptance criteria met, RTM updated, zero open Critical or High defects, documentation synced.
 
 **Rules of the road**
 
@@ -443,8 +445,8 @@ main   ← stable, protected
 |  2   | Requirement Gathering sign-off, Master Test Plan & RTM, domain classes, registration & auth    |
 |  3   | Core banking MVP: accounts, deposits, withdrawals, atomic transfers with fees, REST APIs       |
 |  4   | Statements, CSV export, admin dashboard, audit log, scheduled jobs, and UI element ID freeze   |
-|  5   | Selenium 4 UI automation suite, Postman API collection, and OWASP security test execution      |
-|  6   | Static analysis (SonarLint / SpotBugs), OWASP dependency scan, bug fixing, full regression     |
+|  5   | Selenium 4 UI suite, Postman API collection, and MockMvc/OWASP security test execution         |
+|  6   | Static security analysis (SonarLint/SpotBugs), OWASP dependency scan, bug fixing, regression   |
 |  7   | OpenAPI/Swagger verification, Jira test reports, JaCoCo coverage analysis, and demo rehearsals |
 |  8   | Buffer week, backup demo recording, and final project presentation & defense                   |
 
